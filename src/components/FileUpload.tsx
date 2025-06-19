@@ -47,13 +47,32 @@ export const FileUpload = ({ onFileProcessed }: FileUploadProps) => {
     setIsProcessing(true);
 
     try {
+      console.log('Reading file:', file.name, 'Size:', file.size, 'bytes');
       const text = await file.text();
-      const data = JSON.parse(text);
+      console.log('File content length:', text.length);
+      console.log('First 200 characters:', text.substring(0, 200));
+      console.log('Last 200 characters:', text.substring(text.length - 200));
+      
+      // Try to clean the JSON by removing any trailing content after the last }
+      let cleanedText = text.trim();
+      const lastBraceIndex = cleanedText.lastIndexOf('}');
+      if (lastBraceIndex !== -1 && lastBraceIndex < cleanedText.length - 1) {
+        console.log('Found content after last brace, cleaning...');
+        cleanedText = cleanedText.substring(0, lastBraceIndex + 1);
+        console.log('Cleaned text length:', cleanedText.length);
+      }
+      
+      const data = JSON.parse(cleanedText);
+      console.log('Successfully parsed JSON:', data);
       onFileProcessed(data, file.name);
       toast.success('JSON file processed successfully!');
     } catch (error) {
-      toast.error('Error parsing JSON file');
-      console.error(error);
+      console.error('Error details:', error);
+      if (error instanceof SyntaxError) {
+        toast.error(`JSON parsing error: ${error.message}. Please check if your JSON file is properly formatted.`);
+      } else {
+        toast.error('Error reading the file. Please try again.');
+      }
     } finally {
       setIsProcessing(false);
     }
