@@ -1,4 +1,3 @@
-
 export const convertToCSV = (data: any): string => {
   // Handle both single objects and arrays
   let items = Array.isArray(data) ? data : [data];
@@ -45,35 +44,35 @@ export const convertToCSV = (data: any): string => {
 
   // Process each item and create CSV rows
   const csvRows = items.map(item => {
+    const getOrNull = (val: any) => (val === undefined || val === null || val === '' ? 'NULL' : val);
     const csvRow = [
-      item.id || '',
-      item.name || '',
-      item.provider || '',
-      item.description || '',
-      formatTools(item.tools),
-      item.license || '',
-      item.github_url || '',
-      item.website_url || '',
-      item.documentation_url || '',
-      item.npm_url || '',
-      item.twitter_url || '',
-      item.discord_url || '',
-      item.logo || '',
-      item.category || '',
-      item.content || '',
-      item.installation_guide || '',
-      item.popularity || '',
-      item.slug || '',
-      item.created_at || '',
-      item.updated_at || '',
-      item.last_updated || '',
-      item.readme_content || '',
-      arrayToString(item.main_files),
-      arrayToString(item.dependencies),
-      item.stars || '',
-      item.forks || ''
+      getOrNull(item.id),
+      getOrNull(item.name),
+      getOrNull(item.provider),
+      getOrNull(item.description),
+      item.tools !== undefined ? formatTools(item.tools) : 'NULL',
+      getOrNull(item.license),
+      getOrNull(item.github_url),
+      getOrNull(item.website_url),
+      getOrNull(item.documentation_url),
+      getOrNull(item.npm_url),
+      getOrNull(item.twitter_url),
+      getOrNull(item.discord_url),
+      getOrNull(item.logo),
+      getOrNull(item.category),
+      getOrNull(item.content),
+      getOrNull(item.installation_guide),
+      getOrNull(item.popularity),
+      getOrNull(item.slug),
+      getOrNull(item.created_at),
+      getOrNull(item.updated_at),
+      getOrNull(item.last_updated),
+      getOrNull(item.readme_content),
+      item.main_files !== undefined ? arrayToString(item.main_files) : 'NULL',
+      item.dependencies !== undefined ? arrayToString(item.dependencies) : 'NULL',
+      getOrNull(item.stars),
+      getOrNull(item.forks)
     ];
-
     return csvRow.map(field => escapeCsvField(String(field))).join(',');
   });
 

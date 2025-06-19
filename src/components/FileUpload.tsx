@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { Upload, AlertCircle, CheckCircle, FileText } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,6 +15,9 @@ export const FileUpload = ({ onFileProcessed }: FileUploadProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [previewData, setPreviewData] = useState<any>(null);
+
+  const MAX_FILE_SIZE_MB = 10;
+  const SAMPLE_JSON_URL = 'https://jsonplaceholder.typicode.com/users'; // Replace with your own sample if needed
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -45,7 +47,15 @@ export const FileUpload = ({ onFileProcessed }: FileUploadProps) => {
 
   const handleFileSelection = async (file: File) => {
     if (!file.name.toLowerCase().endsWith('.json')) {
-      setErrorMessage('Please upload a JSON file');
+      setErrorMessage(
+        '❌ Unsupported file type. Please upload a file with a .json extension.\nTip: You can export JSON from most tools, or use the sample JSON below as a template.'
+      );
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+      setErrorMessage(
+        `❌ File too large. Please upload a file smaller than ${MAX_FILE_SIZE_MB}MB. Split your data if needed.`
+      );
       return;
     }
 
@@ -53,28 +63,32 @@ export const FileUpload = ({ onFileProcessed }: FileUploadProps) => {
     setErrorMessage('');
     
     try {
-      console.log('Reading file:', file.name, 'Size:', file.size, 'bytes');
       const text = await file.text();
-      console.log('File content length:', text.length);
-      
-      // Try to clean the JSON by removing any trailing content after the last } or ]
       let cleanedText = text.trim();
       const lastBraceIndex = Math.max(cleanedText.lastIndexOf('}'), cleanedText.lastIndexOf(']'));
       if (lastBraceIndex !== -1 && lastBraceIndex < cleanedText.length - 1) {
-        console.log('Found content after last brace/bracket, cleaning...');
         cleanedText = cleanedText.substring(0, lastBraceIndex + 1);
-        console.log('Cleaned text length:', cleanedText.length);
       }
-      
       const data = JSON.parse(cleanedText);
-      console.log('Successfully parsed JSON:', data);
+      // Check for empty or invalid data structure
+      if (
+        (!Array.isArray(data) && typeof data !== 'object') ||
+        (Array.isArray(data) && data.length === 0) ||
+        (typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length === 0)
+      ) {
+        setErrorMessage(
+          '❌ The uploaded file does not contain valid data.\nSolution: The JSON should be an array of objects, each with the required fields. See the sample JSON below.'
+        );
+        setSelectedFile(null);
+        setPreviewData(null);
+        return;
+      }
       setPreviewData(data);
       toast.success('JSON file loaded successfully! Click "Process File" to convert.');
     } catch (error) {
-      console.error('Error details:', error);
-      const errorMsg = error instanceof SyntaxError 
-        ? `JSON parsing error: ${error.message}. Please check if your JSON file is properly formatted.`
-        : 'Error reading the file. Please try again.';
+      const errorMsg = error instanceof SyntaxError
+        ? `❌ Invalid JSON format. ${error.message}\nSolution: Make sure your file is valid JSON. You can check your file with https://jsonlint.com/`
+        : '❌ Error reading the file. Please try again.';
       setErrorMessage(errorMsg);
       setSelectedFile(null);
       setPreviewData(null);
@@ -88,28 +102,18 @@ export const FileUpload = ({ onFileProcessed }: FileUploadProps) => {
     setErrorMessage('');
 
     try {
-      // Handle both single objects and arrays
       let processedData = previewData;
-      
       if (Array.isArray(previewData)) {
-        console.log(`Processing array with ${previewData.length} items`);
-        // For arrays, we'll process each item
         processedData = previewData;
       } else {
-        console.log('Processing single object');
-        // For single objects, wrap in array for consistent processing
         processedData = [previewData];
       }
-
       onFileProcessed(processedData, selectedFile.name);
       toast.success(`JSON file processed successfully! ${Array.isArray(previewData) ? previewData.length + ' items' : '1 item'} converted to CSV.`);
-      
-      // Reset state after successful processing
       setSelectedFile(null);
       setPreviewData(null);
     } catch (error) {
-      console.error('Processing error:', error);
-      const errorMsg = `Error processing file: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      const errorMsg = `❌ An error occurred while processing your file. ${error instanceof Error ? error.message : 'Unknown error'}\nSolution: Double-check your data format. If the problem persists, contact support or see the sample JSON below.`;
       setErrorMessage(errorMsg);
     } finally {
       setIsProcessing(false);
@@ -137,7 +141,21 @@ export const FileUpload = ({ onFileProcessed }: FileUploadProps) => {
         {errorMessage && (
           <Alert variant="destructive" className="mb-4">
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{errorMessage}</AlertDescription>
+            <AlertDescription>
+              {errorMessage.split('\n').map((line, idx) => (
+                <div key={idx}>{line}</div>
+              ))}
+              <div className="mt-2">
+                <a
+                  href={SAMPLE_JSON_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline text-sm"
+                >
+                  View Sample JSON
+                </a>
+              </div>
+            </AlertDescription>
           </Alert>
         )}
 
