@@ -199,21 +199,21 @@ export const FileUpload = ({ onFileProcessed }: FileUploadProps) => {
           />
           
           <div className="space-y-4">
-            <div className="p-4 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full inline-block">
+            <div className="p-4 bg-zinc-800 rounded-full inline-block">
               {selectedFile ? (
-                <FileText className="h-8 w-8 text-green-600" />
+                <FileText className="h-8 w-8 text-green-400" />
               ) : (
-                <Upload className="h-8 w-8 text-blue-600" />
+                <Upload className="h-8 w-8 text-blue-400" />
               )}
             </div>
             <div>
-              <p className="text-lg font-medium text-gray-700 mb-2">
+              <p className="text-lg font-medium text-white mb-2">
                 {selectedFile 
                   ? `Selected: ${selectedFile.name}` 
                   : 'Choose a JSON file or drag it here'
                 }
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-white">
                 Supports .json files up to 10MB (single objects or arrays)
               </p>
             </div>

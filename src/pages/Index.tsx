@@ -20,19 +20,19 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-zinc-900 text-white">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-4">
-            <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl shadow-lg">
-              <FileText className="h-8 w-8 text-white" />
+            <div className="p-3 bg-zinc-800 rounded-xl shadow-lg">
+              <FileText className="h-8 w-8 text-zinc-100" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-            Data Harmonizer Converter
+          <h1 className="text-4xl font-bold text-white mb-4">
+            json-to-csv-converter
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-white max-w-2xl mx-auto">
             Transform your JSON data into clean, structured CSV files with ease. 
             Perfect for data analysis, reporting, and database imports.
           </p>
