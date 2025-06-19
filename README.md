@@ -1,8 +1,8 @@
-# Data Harmonizer Converter
+# json-to-csv-converter
 
 ## Overview
 
-**Data Harmonizer Converter** is a web application that allows users to upload JSON files (arrays or single objects) and convert them into clean, structured CSV files. It is ideal for data analysis, reporting, and database imports. The app ensures data integrity by mapping your JSON data to a fixed set of CSV columns, filling missing fields with `NULL` for clarity.
+**json-to-csv-converter** is a web application that allows users to upload JSON files (arrays or single objects) and convert them into clean, structured CSV files. It is ideal for data analysis, reporting, and database imports. The app ensures data integrity by mapping your JSON data to a fixed set of CSV columns, filling missing fields with `NULL` for clarity.
 
 ## Features
 - Upload JSON files (single object or array of objects)
@@ -102,7 +102,7 @@ The output CSV will always include these columns (missing fields will be filled 
 
 ## Project Structure
 ```
-data-harmonizer-converter/
+json-to-csv-converter/
 ├── public/                # Static assets
 ├── src/
 │   ├── components/        # React components
@@ -120,7 +120,7 @@ data-harmonizer-converter/
 1. **Clone the repository:**
    ```sh
    git clone <YOUR_GIT_URL>
-   cd data-harmonizer-converter
+   cd json-to-csv-converter
    ```
 2. **Install dependencies:**
    ```sh
