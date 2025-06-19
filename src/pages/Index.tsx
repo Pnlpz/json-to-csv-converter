@@ -77,12 +77,28 @@ const Index = () => {
       return Array.isArray(arr) ? JSON.stringify(arr) : arr || '';
     };
 
+    const formatTools = (tools: any) => {
+      if (!Array.isArray(tools)) return '';
+      
+      const formattedTools = tools.map(tool => {
+        if (typeof tool === 'object' && tool.name && tool.description) {
+          return JSON.stringify({
+            name: tool.name,
+            description: tool.description
+          });
+        }
+        return tool;
+      });
+      
+      return JSON.stringify(formattedTools);
+    };
+
     const csvRow = [
       tableData.id || '',
       tableData.name || '',
       tableData.provider || '',
       tableData.description || '',
-      arrayToString(tableData.tools),
+      formatTools(tableData.tools),
       tableData.license || '',
       tableData.github_url || '',
       tableData.website_url || '',
