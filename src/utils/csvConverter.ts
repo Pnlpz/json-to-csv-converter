@@ -83,3 +83,23 @@ export const convertToCSV = (data: any): string => {
 
   return csvContent;
 };
+
+// Utility to flatten a single object with a 'table' property
+export function flattenTableObject(obj: any) {
+  if (obj && typeof obj === 'object' && obj.table) {
+    const flat = { ...obj.table };
+    // Flatten tools if present
+    if (Array.isArray(flat.tools)) {
+      flat.tools = flat.tools.map((tool: any) =>
+        tool && tool.table ? { name: tool.table.name, description: tool.table.description } : tool
+      );
+    }
+    return flat;
+  }
+  return obj;
+}
+
+// Utility to flatten an array of such objects
+export function flattenTableArray(arr: any[]) {
+  return arr.map(flattenTableObject);
+}

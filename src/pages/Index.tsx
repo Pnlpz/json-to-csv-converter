@@ -1,11 +1,10 @@
-
 import { useState } from 'react';
 import { FileText } from 'lucide-react';
 import { FileUpload } from '@/components/FileUpload';
 import { ProcessingStatus } from '@/components/ProcessingStatus';
 import { CSVDownload } from '@/components/CSVDownload';
 import { FeatureCards } from '@/components/FeatureCards';
-import { convertToCSV } from '@/utils/csvConverter';
+import { convertToCSV, flattenTableArray, flattenTableObject } from '@/utils/csvConverter';
 
 const Index = () => {
   const [jsonData, setJsonData] = useState<any>(null);
@@ -15,7 +14,8 @@ const Index = () => {
   const handleFileProcessed = (data: any, name: string) => {
     setJsonData(data);
     setFileName(name);
-    const csvContent = convertToCSV(data);
+    const flattened = Array.isArray(data) ? flattenTableArray(data) : [flattenTableObject(data)];
+    const csvContent = convertToCSV(flattened);
     setCsvData(csvContent);
   };
 
