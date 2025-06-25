@@ -8,7 +8,7 @@ export const convertToCSV = (data: any): string => {
   }
 
   const headers = [
-    'id', 'name', 'provider', 'description', 'tools', 'license', 'github_url', 
+    'name', 'provider', 'description', 'tools', 'license', 'github_url', 
     'website_url', 'documentation_url', 'npm_url', 'twitter_url', 'discord_url', 
     'logo', 'category', 'content', 'installation_guide', 'popularity', 'slug', 
     'created_at', 'updated_at', 'last_updated', 'readme_content', 'main_files', 
@@ -46,7 +46,6 @@ export const convertToCSV = (data: any): string => {
   const csvRows = items.map(item => {
     const getOrNull = (val: any) => (val === undefined || val === null || val === '' ? 'NULL' : val);
     const csvRow = [
-      getOrNull(item.id),
       getOrNull(item.name),
       getOrNull(item.provider),
       getOrNull(item.description),
