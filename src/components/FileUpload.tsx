@@ -108,8 +108,22 @@ export const FileUpload = ({ onFileProcessed }: FileUploadProps) => {
       } else {
         processedData = [previewData];
       }
+
+      // CLEANING STEP: Remove 'results' key, ensure starts with 'name', remove NaN objects
+      processedData = processedData
+        .filter(obj => obj && typeof obj === 'object' && !Number.isNaN(obj) && obj.name)
+        .map(obj => {
+          const { results, ...rest } = obj;
+          // Ensure 'name' is the first key
+          if ('name' in rest) {
+            const { name, ...others } = rest;
+            return { name, ...others };
+          }
+          return rest;
+        });
+
       onFileProcessed(processedData, selectedFile.name);
-      toast.success(`JSON file processed successfully! ${Array.isArray(previewData) ? previewData.length + ' items' : '1 item'} converted to CSV.`);
+      toast.success(`JSON file processed successfully! ${processedData.length} items converted to CSV.`);
       setSelectedFile(null);
       setPreviewData(null);
     } catch (error) {
